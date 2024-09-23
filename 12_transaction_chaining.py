@@ -80,9 +80,14 @@ while True:
 
         total_ada_used = 0
         for utxo in utxos:
-            input = TransactionInput(utxo['tx_hash'], utxo['tx_index'])
+            #print(utxo['tx_hash'])
+
+            input = TransactionInput.from_primitive([utxo['tx_hash'], utxo['tx_index']])
+            
+            
             inputs.append(input)
             total_ada_used+=int(utxo['amount'])
+
 
 
 
@@ -126,17 +131,14 @@ while True:
 
 
         try:
-            print(signed_tx.to_cbor_hex())
-            #result = cardano.submit_tx(signed_tx)
-            
-            print(" ")
-            print(signed_tx.to_primitive())
-            print(" ")
 
-            headers = {'Content-Type': 'application/cbor'}
-            result = requests.post("http://submit.stakeforcake.com:8090/api/submit/tx", data=signed_tx.to_cbor(), headers=headers)
+            result = cardano.submit_tx(signed_tx)
+
+            if len(result) > 64:
+                print(signed_tx.to_cbor_hex())
+            else:
         
-            if result.status_code==200:
+            
                 print(f"Number of inputs: \t {len(signed_tx.transaction_body.inputs)}") 
                 print(f"Number of outputs: \t {len(signed_tx.transaction_body.outputs)}") 
                 print(f"Fee: \t\t\t {signed_tx.transaction_body.fee/1000000} ADA") 
@@ -148,14 +150,10 @@ while True:
                     new_utxo = {
                         'tx_hash': result,
                         'tx_index': i,
-                        'amount': 10000000
+                        'amount': output.amount.coin
                     }
 
                     utxos.append(new_utxo)
-            else:
-                print(result.content)
-
-            time.sleep(1)
 
         except Exception as e:                                   
             print(e)
