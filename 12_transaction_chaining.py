@@ -80,7 +80,6 @@ while True:
 
         total_ada_used = 0
         for utxo in utxos:
-            #print(utxo['tx_hash'])
 
             input = TransactionInput.from_primitive([utxo['tx_hash'], utxo['tx_index']])
             
@@ -157,3 +156,4 @@ while True:
 
         except Exception as e:                                   
             print(e)
+            reload_utxos(main_address)
