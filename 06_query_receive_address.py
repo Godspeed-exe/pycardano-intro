@@ -22,7 +22,7 @@ else:
 
 
 new_wallet = crypto.bip32.HDWallet.from_mnemonic(wallet_mnemonic)
-payment_key = new_wallet.derive_from_path(f"m/1852'/1815'/0'/0/0")
+payment_key = new_wallet.derive_from_path(f"m/1852'/1815'/0'/0/1")
 staking_key = new_wallet.derive_from_path(f"m/1852'/1815'/0'/2/0")
 payment_skey = ExtendedSigningKey.from_hdwallet(payment_key)
 staking_skey = ExtendedSigningKey.from_hdwallet(staking_key)
@@ -49,10 +49,9 @@ except Exception as e:
 
 print(f"hash \t\t\t\t\t\t\t\t\t amount")
 print("--------------------------------------------------------------------------------------")
-
 for utxo in utxos:
     tokens = ""
     for token in utxo.amount:
         if token.unit != "lovelace":
-            tokens += f"{token.quantity} {token.unit} + "
+            tokens += f"{token.quantity} {token.unit} + "    
     print(f"{utxo.tx_hash}#{utxo.tx_index} \t {int(utxo.amount[0].quantity)/1000000} ADA [{tokens}]")
